@@ -1,12 +1,18 @@
 <?php
 
-$imagesDir = 'path/to/your/images/directory';
-$thumbnailsDir = 'path/to/your/thumbnails/directory';
+$imagesDir = 'C:\\path\\to\\your\\images\\directory';
+$thumbnailsDir = 'C:\\path\\to\\your\\thumbnails\\directory';
 $thumbnailWidth = 300;
 $thumbnailHeight = 200;
 
-if (!file_exists($thumbnailsDir)) {
-    mkdir($thumbnailsDir, 0777, true);
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    if (!file_exists($thumbnailsDir)) {
+        mkdir($thumbnailsDir, 0777, true);
+    }
+} else {
+    if (!file_exists($thumbnailsDir)) {
+        mkdir($thumbnailsDir, 0755, true);
+    }
 }
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -20,8 +26,8 @@ $images = array_slice($images, $offset, $imagesPerPage);
 $response = ['images' => []];
 
 foreach ($images as $image) {
-    $imagePath = $imagesDir . '/' . $image;
-    $thumbnailPath = $thumbnailsDir . '/' . $image;
+    $imagePath = $imagesDir . '\\' . $image;
+    $thumbnailPath = $thumbnailsDir . '\\' . $image;
 
     if (!file_exists($thumbnailPath)) {
         createThumbnail($imagePath, $thumbnailPath, $thumbnailWidth, $thumbnailHeight);
